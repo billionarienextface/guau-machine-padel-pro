@@ -58,10 +58,22 @@ export default function ClientsPage() {
   const maxMrr = Math.max(baseMrr, luxeMrr, atelierMrr, 1);
 
   async function handleAddClient() {
-    const randomLeadId =
+    let randomLeadId: string | null =
       leads.length > 0
         ? leads[Math.floor(Math.random() * leads.length)].id
-        : crypto.randomUUID();
+        : null;
+
+    if (!randomLeadId) {
+      const { data: anyLead } = await supabase
+        .from("leads")
+        .select("id")
+        .limit(1)
+        .single();
+      randomLeadId = anyLead?.id ?? null;
+    }
+
+    if (!randomLeadId) return;
+
     await supabase
       .from("clients")
       .insert({ lead_id: randomLeadId, plan: "LUXE", mrr: 797 });

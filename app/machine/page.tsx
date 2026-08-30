@@ -170,7 +170,7 @@ export default function Machine() {
       {tab === "AUDITORIA" && (
         <div className="space-y-6">
           {leads
-            .filter((l) => l.status === "NEW")
+            .filter((l) => l.status === "NEW" || auditResults[l.id])
             .map((lead) => (
               <div
                 key={lead.id}
@@ -182,10 +182,14 @@ export default function Machine() {
                   </p>
                   <button
                     onClick={() => handleAudit(lead.id)}
-                    disabled={actionLoadingId === lead.id}
+                    disabled={actionLoadingId === lead.id || !!auditResults[lead.id]}
                     className="bg-[#FF6B00] text-black px-4 py-2 rounded font-display uppercase text-sm disabled:opacity-50"
                   >
-                    {actionLoadingId === lead.id ? "AUDITANDO..." : "AUDITAR"}
+                    {actionLoadingId === lead.id
+                      ? "AUDITANDO..."
+                      : auditResults[lead.id]
+                      ? "AUDITADO"
+                      : "AUDITAR"}
                   </button>
                 </div>
                 {auditResults[lead.id] && (
